@@ -3,8 +3,20 @@ const path = require("path");
 const fs = require("fs");
 
 const homeDir = os.homedir();
-const settingJson = require("./setting-brave.json");
-const braveProfileDir = path.join(homeDir, "AppData", "Local", "BraveSoftware", "Brave-Browser", "User Data");
+const settingJson = require("./ori.json");
+let braveProfileDir;
+
+const platform = os.platform();
+
+if (platform === "win32") {
+    braveProfileDir = path.join(homeDir, "AppData", "Local", "BraveSoftware", "Brave-Browser", "User Data");
+} else if (platform === "linux") {
+    braveProfileDir = path.join(homeDir, ".config", "BraveSoftware", "Brave-Browser");
+} else if (platform === "darwin") {
+    return console.log("...!");
+} else {
+    return console.log("[ERROR] Unsupport platform!");
+}
 
 fs.readdir(braveProfileDir, (err, files) => {
     if (err) {
