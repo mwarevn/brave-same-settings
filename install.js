@@ -13,7 +13,7 @@ if (platform === "win32") {
 } else if (platform === "linux") {
     braveProfileDir = path.join(homeDir, ".config", "BraveSoftware", "Brave-Browser");
 } else if (platform === "darwin") {
-    return console.log("...!");
+    braveProfileDir = path.join(homeDir, "Library", "Application Support", "BraveSoftware", "Brave-Browser");
 } else {
     return console.log("[ERROR] Unsupport platform!");
 }
