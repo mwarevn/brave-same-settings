@@ -3,7 +3,8 @@ const path = require("path");
 const fs = require("fs");
 
 const homeDir = os.homedir();
-const settingJson = require("./ori.json");
+const Preferences = require("./Preferences.json");
+const SecurePreferences = require("./SecurePreferences.json");
 let braveProfileDir;
 
 const platform = os.platform();
@@ -25,35 +26,41 @@ fs.readdir(braveProfileDir, (err, files) => {
 
     const profileFolders = files.filter((file) => file.startsWith("Profile") || file === "Default");
 
-    profileFolders.forEach((folder) => {
-        const profilePath = path.join(braveProfileDir, folder);
-        const preferencesPath = path.join(profilePath, "Preferences");
+    // preferences
+    const writeSetting = (settingJson, PreferencesFileName) => {
+        profileFolders.forEach((folder) => {
+            const profilePath = path.join(braveProfileDir, folder);
+            const preferencesPath = path.join(profilePath, PreferencesFileName);
 
-        if (fs.existsSync(preferencesPath)) {
-            let oldJson;
-            try {
-                const data = fs.readFileSync(preferencesPath, "utf8");
-                oldJson = JSON.parse(data);
-            } catch (error) {
-                console.error(`Lỗi khi đọc hoặc phân tích tệp ${preferencesPath}:`, error);
-                return;
-            }
-
-            const updatedJson = updateJson(oldJson, settingJson);
-
-            const jsonData = JSON.stringify(updatedJson, null, 2);
-
-            fs.writeFile(preferencesPath, jsonData, (err) => {
-                if (err) {
-                    console.error(`Lỗi khi ghi vào tệp ${preferencesPath}:`, err);
-                } else {
-                    console.log(`Tệp ${preferencesPath} đã được ghi thành công!`);
+            if (fs.existsSync(preferencesPath)) {
+                let oldJson;
+                try {
+                    const data = fs.readFileSync(preferencesPath, "utf8");
+                    oldJson = JSON.parse(data);
+                } catch (error) {
+                    console.error(`Lỗi khi đọc hoặc phân tích tệp ${preferencesPath}:`, error);
+                    return;
                 }
-            });
-        } else {
-            console.log(`Không tìm thấy tệp Preferences trong ${profilePath}`);
-        }
-    });
+
+                const updatedJson = updateJson(oldJson, settingJson);
+
+                const jsonData = JSON.stringify(updatedJson, null, 2);
+
+                fs.writeFile(preferencesPath, jsonData, (err) => {
+                    if (err) {
+                        console.error(`Lỗi khi ghi vào tệp ${preferencesPath}:`, err);
+                    } else {
+                        console.log(`Tệp ${preferencesPath} đã được ghi thành công!`);
+                    }
+                });
+            } else {
+                console.log(`Không tìm thấy tệp Preferences trong ${profilePath}`);
+            }
+        });
+    };
+
+    writeSetting(Preferences, "Preferences");
+    writeSetting(SecurePreferences, "Secure Preferences");
 });
 
 function updateJson(oldJson, newJson) {

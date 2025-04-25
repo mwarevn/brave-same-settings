@@ -123,6 +123,7 @@
         "p3a_fp_strict_domain_count": 0
     },
     "browser": {
+        "show_home_button": true,
         "enable_spellchecking": false,
         "has_seen_welcome_page": false,
         "theme": { "color_variant": 2, "follows_system_colors": false }
